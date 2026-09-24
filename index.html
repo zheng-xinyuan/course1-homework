@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>学会使用大模型 · 第一课作业</title>
+<meta name="description" content="《学会使用大模型》第一课作业：装好一个能用的大模型 Agent，并把网页部署上线（EdgeOne Pages / 腾讯云）。">
+<meta name="theme-color" content="#0f172a">
+<style>
+  :root {
+    --bg: #0b1020;
+    --card: #151b2e;
+    --line: #232b45;
+    --text: #e8ecf5;
+    --muted: #99a3bb;
+    --accent: #4f8cff;
+    --ok: #38d39f;
+    --warn: #ffb454;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #1d2b5244, transparent),
+      radial-gradient(900px 500px at 100% 0%, #2b1f4a44, transparent),
+      var(--bg);
+    color: var(--text);
+    font-family: system-ui, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    line-height: 1.75;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    width: min(100% - 32px, 860px);
+    margin: 0 auto;
+    padding: 56px 0 72px;
+  }
+
+  header.hero { margin-bottom: 40px; }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: .04em;
+  }
+
+  h1 {
+    margin: 18px 0 10px;
+    font-size: clamp(30px, 6vw, 46px);
+    line-height: 1.24;
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+
+  h1 .grad {
+    background: linear-gradient(96deg, #6ea8ff, #9d7bff 55%, #43e0c0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .lede { color: var(--muted); font-size: 16px; max-width: 62ch; }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .meta b { color: var(--text); font-weight: 600; }
+
+  section { margin-top: 34px; }
+
+  h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0 0 14px;
+    font-size: 19px;
+    font-weight: 650;
+  }
+
+  h2 .en { color: var(--muted); font-size: 13px; font-weight: 400; letter-spacing: .04em; }
+
+  .card {
+    background: linear-gradient(180deg, #ffffff08, #ffffff03);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px 22px;
+  }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+  .step { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: #ffffff05; }
+  .step .no { color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .08em; }
+  .step h3 { margin: 6px 0 6px; font-size: 16px; font-weight: 620; }
+  .step p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  ul.clean { margin: 0; padding-left: 20px; }
+  ul.clean li { margin: 6px 0; color: #cdd6ea; }
+  ul.clean li b { color: #fff; font-weight: 620; }
+
+  code {
+    background: #ffffff12;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1px 6px;
+    font-family: ui-monospace, Consolas, "Cascadia Mono", monospace;
+    font-size: 13px;
+  }
+
+  .status { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .status li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+  .dot { flex: none; width: 18px; text-align: center; }
+  .done { color: var(--ok); }
+  .todo { color: var(--warn); }
+
+  .kv { display: grid; grid-template-columns: 130px 1fr; gap: 6px 14px; font-size: 14px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; }
+
+  blockquote {
+    margin: 0;
+    padding: 14px 18px;
+    border-left: 3px solid var(--accent);
+    background: #4f8cff14;
+    border-radius: 0 12px 12px 0;
+    color: #d7e0f5;
+    font-size: 15px;
+  }
+
+  footer {
+    margin-top: 46px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    justify-content: space-between;
+  }
+
+  footer a { color: #8fb6ff; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .card, .step { border-color: #ccc; background: #fff; }
+    h1 .grad { color: #111; -webkit-text-fill-color: #111; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="tag">《学会使用大模型》· 第一课作业</span>
+    <h1>装好一个 <span class="grad">能用的大模型 Agent</span><br>并把它做的网页部署上线</h1>
+    <p class="lede">
+      本课不训练模型，只做一件事：把「节点二 · 我是谁？我在哪？我要做什么？」跑通 ——
+      配好一个接在 DeepSeek 上的 Claude Code，亲手验证它能读文件、能跑代码、能联网，
+      最后把成果用腾讯云 EdgeOne Pages 发布成一个公开网址。
+    </p>
+    <div class="meta">
+      <span>姓名 <b>郑欣媛</b></span>
+      <span>课程 <b>学会使用大模型（第一课）</b></span>
+      <span>硬件 <b>RTX 3060 Laptop 6GB · Windows</b></span>
+      <span>运行环境 <b>Node v24.21.0 · Git 2.55.0</b></span>
+    </div>
+  </header>
+
+  <section>
+    <h2>我这次做了什么 <span class="en">TASKS</span></h2>
+    <div class="grid">
+      <div class="step">
+        <div class="no">任务 A</div>
+        <h3>开通账号</h3>
+        <p>注册代码托管与部署平台账号，把「本地干活 → push → 自动上线」这条链路打通。</p>
+      </div>
+      <div class="step">
+        <div class="no">任务 B</div>
+        <h3>装好 Agent（核心）</h3>
+        <p>用 Claude Code 接 DeepSeek 的 API：改 base_url、写环境变量，不用梯子、不用 Anthropic 的 Key。</p>
+      </div>
+      <div class="step">
+        <div class="no">任务 C</div>
+        <h3>部署上线</h3>
+        <p>把网页发布到腾讯云 EdgeOne Pages，拿到一个任何人都能打开的公开网址。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Agent 是怎么接上 DeepSeek 的 <span class="en">HOW IT WORKS</span></h2>
+    <div class="card">
+      <p style="margin-top:0;color:var(--muted);font-size:14px;">
+        Claude Code 内部有五个「模型名字」，实际只对应 DeepSeek 的两个模型，靠 7 个环境变量做映射：
+      </p>
+      <dl class="kv">
+        <dt>接口地址</dt>
+        <dd><code>ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic</code></dd>
+        <dt>鉴权</dt>
+        <dd><code>ANTHROPIC_AUTH_TOKEN=sk-****</code>（密钥只存在本机用户环境变量，不进仓库）</dd>
+        <dt>主 / Opus / Sonnet</dt>
+        <dd><code>deepseek-v4-flash-vision-exp</code> —— 复杂决策，<b>会看图</b></dd>
+        <dt>Haiku / 子代理</dt>
+        <dd><code>deepseek-v4-flash</code> —— 大量搜索读取，更便宜</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <h2>三个验收动作 <span class="en">ACCEPTANCE</span></h2>
+    <div class="card">
+      <ul class="clean">
+        <li><b>读</b> —— 让它列出文件夹并总结里面的文件：确认它真能读到我本机的文件。</li>
+        <li><b>跑</b> —— 让它写一个画图脚本并自己运行成功：确认它能写代码、还能真的执行。</li>
+        <li><b>查</b> —— 让它联网查一条最新信息并写进 md：确认它能联网、并把结果落盘。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>进度看板 <span class="en">STATUS</span></h2>
+    <div class="card">
+      <ul class="status">
+        <li><span class="dot done">✔</span><span>Node / npm 环境就绪（Node v24.21.0，课件要求 ≥22）</span></li>
+        <li><span class="dot done">✔</span><span>Git 已安装（<b>2.55.0</b>）—— 有了 Git，Agent 才能用 Bash 工具</span></li>
+        <li><span class="dot done">✔</span><span>EdgeOne CLI 已装好（<b>1.6.41</b>），并完成腾讯云登录授权（China 站）</span></li>
+        <li><span class="dot done">✔</span><span>腾讯云 EdgeOne Pages 服务已开通，站点 <code>default-pages-zone</code> 已激活</span></li>
+        <li><span class="dot done">✔</span><span>网页已部署上线（项目 <code>course1-homework</code>）—— 你现在打开的就是它</span></li>
+        <li><span class="dot todo">○</span><span>DeepSeek API Key 与 Claude Code 装机（进行中）</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>踩到的坑 <span class="en">GOTCHAS</span></h2>
+    <div class="card">
+      <ul class="clean">
+        <li>Windows 的 PowerShell 默认执行策略是 <code>Restricted</code>，<code>npm</code> 会直接报「禁止运行脚本」，
+            需要先 <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>。</li>
+        <li>npm 官方源在国内很慢，先把源换成 <code>registry.npmmirror.com</code> 再装 CLI。</li>
+        <li>模型名和价格会变，配置时要以<b>操作当天的官方文档</b>为准，不要照抄旧课件。</li>
+        <li>密钥要从环境变量读，<b>绝不能提交进 git 仓库</b>。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <blockquote>
+      一句话总结：这门课第一课要的不是「学会多少原理」，而是<b>先拥有一个真的能干活的 Agent</b> ——
+      装好、验收、上线，形成闭环。
+    </blockquote>
+  </section>
+
+  <footer>
+    <span>《学会使用大模型》第一课作业 · 郑欣媛</span>
+    <span>部署于腾讯云 EdgeOne Pages</span>
+  </footer>
+
+</div>
+</body>
+</html>
